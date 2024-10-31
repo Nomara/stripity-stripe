@@ -12,6 +12,15 @@ defmodule Stripe.Converter do
 
   @no_convert_maps ~w(metadata supported_bank_account_currencies)
 
+  # Define list of supported Stripe objects based on generated modules
+  @supported_objects "lib/generated/"
+                     |> File.ls!()
+                     |> Enum.map(fn filename ->
+                       filename
+                       |> String.replace(".ex", "")
+                       |> String.replace("__", "_")
+                       |> String.downcase()
+                     end)
 
   @doc """
   Returns a list of structs to be used for providing JSON-encoders.
@@ -35,7 +44,6 @@ defmodule Stripe.Converter do
     (@supported_objects -- @no_convert_maps)
     |> Enum.map(&Stripe.Util.object_name_to_module/1)
   end
-
 
   @spec convert_value(any) :: any
   defp convert_value(%{"object" => object_name} = value) when is_binary(object_name) do
