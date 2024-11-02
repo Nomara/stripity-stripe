@@ -18,9 +18,10 @@ defmodule Stripe.Converter do
                      |> Enum.map(fn filename ->
                        filename
                        |> String.replace(".ex", "")
-                       |> String.replace("__", "_")
+                       |> String.replace("__", ".")
                        |> String.downcase()
                      end)
+                     |> Enum.concat(~w(list error))
 
   @doc """
   Returns a list of structs to be used for providing JSON-encoders.
